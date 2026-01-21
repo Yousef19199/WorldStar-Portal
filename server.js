@@ -21,7 +21,7 @@ const BOT_TOKEN = 'MTQ2MzM2ODYxMzY5OTM5MTcxMg.G5R0kR.cnpmTb2RXSCiai7mYhdCACNh6_H
 const ADMIN_CHANNEL_ID = '1457831080039284760';
 const CLIENT_ID = '1463368613699391712';
 const CLIENT_SECRET = 'xgfhH2B456ANPBsbxzKTu5OR26goF2AZ';
-const CALLBACK_URL = ''https://worldstar-portal-1.onrender.com/auth/discord/callback';
+const CALLBACK_URL = 'https://worldstar-portal-1.onrender.com/auth/discord/callback';
 
 let isApplyOpen = true; 
 let submittedUsers = new Set(); // لمنع التقديم أكثر من مرة
@@ -135,3 +135,4 @@ const PORT = process.env.PORT || 3000;
 client.login(BOT_TOKEN);
 
 app.listen(PORT, () => console.log(`✅ السيرفر شغال على بورت ${PORT}`));
+
