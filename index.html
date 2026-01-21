@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Star | Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="overlay"></div>
+    
+    <nav>
+        <div class="user-box" id="userInfo">
+            <img src="" id="userAvatar" style="display:none; border-radius: 50%; width: 35px; margin-left: 10px;">
+            <span id="userName">جاري التحقق..</span>
+        </div>
+        <div class="nav-links">
+            <a onclick="show('about')">من نحن</a>
+            <a onclick="show('rules')">القوانين</a>
+            <a onclick="show('streamers')">الستريمرز</a>
+            <a onclick="show('apply')" class="apply-nav">التقديم</a>
+        </div>
+    </nav>
+
+    <div id="about" class="container active">
+        <div class="card">
+            <h2 class="section-title"><i class="fas fa-star"></i> من نحن</h2>
+            <p>نحن مدينة <b>وورلد ستار (World Star)</b>
+وورلد ستـار – أكثر من مجرد سيرفر 
+```
+فـي وورلـد ستـار، لن تكون مجرد لاعب يمر مرور الكرام ، بل جزء من عالم نابض بالحياة ، حيث لكل شخص دور، ولكل لحظة قيمة . هنا، تصنع الذكريات ، تخوض التحديات ، وتعيش تجربة لا تشبه أي تجربة أخرى.
+
+منذ تأسيسنا للسيرفر في 22 ديسمبر 2021 ، لم يكن هدفنا مجرد بناء سيرفر ، بل بناء مجتمع، بيت ، ووطن يجد فيه كل لاعب مكانه ، شغفه ، وحماسه الذي لا ينتهي . كل هذا يتحقق بفضل طاقم إداري محترف يعمل بكل جهد لضمان تجربة استثنائية ، بتقديم الدعم المستمر ، والاستماع للاعبين ، وخلق بيئة عادلة تملؤها المنافسة والمتعة .
+
+هنا لا حدود للطموح ، لا قيود للإبداع … في وورلد ستار ، أنت تصنع قصتك ، وتحدد مستقبلك بنفسك !</p>
+        </div>
+    </div>
+
+    <div id="rules" class="container">
+        <div class="card">
+            <h2 class="section-title" style="color:#ffcc00;"><i class="fas fa-scroll"></i> قوانين صناع المحتوى</h2>
+            <ul class="rules-list">
+                <li><i class="fas fa-check-circle"></i> الالتزام بقوانين السيرفر بشكل جدي.</li>
+                <li><i class="fas fa-check-circle"></i> عدم الخروج عن الرول بلاي مهما كان السبب.</li>
+                <li><i class="fas fa-check-circle"></i> تقمص الشخصية بكل حذافيرها (يمنع التلميح).</li>
+                <li><i class="fas fa-check-circle"></i> يمنع بث سيرفرات أخرى في روم البثوث.</li>
+                <li><i class="fas fa-check-circle"></i> يمنع ذكر سلبيات السيرفر أو القلتشات بالبث.</li>
+            </ul>
+            <div class="warning-box">
+                ⚠️ البث في سيرفرات غير World Star يؤدي لسحب الرتبة فوراً.
+            </div>
+        </div>
+    </div>
+
+    <div id="streamers" class="container">
+        <div class="card">
+            <h2 class="section-title"><i class="fas fa-video"></i> الستريمرز المعتمدين</h2>
+            <div class="streamer-tag">Matrix~KWT</div>
+        </div>
+    </div>
+
+    <div id="apply" class="container">
+        <div class="card" id="applyContent">
+            </div>
+    </div>
+
+    <script>
+        function show(id) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function init() {
+            try {
+                const res = await fetch('/api/user');
+                const data = await res.json();
+                const content = document.getElementById('applyContent');
+
+                if (!data.user) {
+                    document.getElementById('userName').innerText = "زائر";
+                    content.innerHTML = `
+                        <div class="login-prompt">
+                            <i class="fab fa-discord" style="font-size: 50px; color: #5865F2;"></i>
+                            <h2>يجب تسجيل الدخول للمتابعة 🔒</h2>
+                            <p>يرجى تسجيل الدخول عبر ديسكورد لتتمكن من إرسال طلب التقديم.</p>
+                            <button onclick="location.href='/auth/discord'" class="btn-discord">
+                                تسجيل الدخول عبر Discord
+                            </button>
+                        </div>`;
+                    return;
+                }
+
+                document.getElementById('userName').innerText = data.user.username;
+                const av = document.getElementById('userAvatar');
+                av.src = `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png`;
+                av.style.display = "inline-block";
+
+                if (!data.isOpen) {
+                    content.innerHTML = `<div class="status-msg"><h2>عذراً، التقديم مغلق حالياً ❌</h2></div>`;
+                } else {
+                    content.innerHTML = `
+                        <h2 class="form-title"><i class="fas fa-edit"></i> تقديم صناعة المحتوى</h2>
+                        <form id="applyForm" class="modern-form">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label>الاسم الكامل</label>
+                                    <input type="text" name="fullName" placeholder="الاسم كما في الهوية" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>العمر</label>
+                                    <input type="number" name="age" placeholder="مثال: 21" required>
+                                </div>
+                            </div>
+
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label>اسم القناة ورابطها</label>
+                                    <input type="text" name="channelLink" placeholder="YouTube / Twitch / TikTok" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>عدد المشتركين + المشاهدات</label>
+                                    <input type="text" name="stats" placeholder="مثال: 10K / 500 مشاهد" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>نوع المحتوى</label>
+                                <select name="contentType" required>
+                                    <option value="" disabled selected>اختر نوع المحتوى</option>
+                                    <option value="Streamer (بث مباشر)">Streamer (بث مباشر)</option>
+                                    <option value="YouTuber (مقاطع)">YouTuber (مقاطع)</option>
+                                    <option value="Designer (مصمم)">Designer (مصمم)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label>عرف عن نفسك كصانع محتوى</label>
+                                <textarea name="about" placeholder="تكلم عن خبرتك ومسيرتك..." required></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label>ماذا تحتاج من الإدارة لمساعدتك؟</label>
+                                <textarea name="needs" placeholder="أدوات، دعم، رتب، إلخ..."></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label>ماهي أهدافك مع وورلد ستار؟</label>
+                                <textarea name="goals" placeholder="كيف ستفيد المدينة؟" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">إرسال التقديم</button>
+                        </form>`;
+                    
+                    document.getElementById('applyForm').onsubmit = async (e) => {
+                        e.preventDefault();
+                        const f = e.target;
+                        const formData = {
+                            fullName: f.fullName.value,
+                            age: f.age.value,
+                            channelLink: f.channelLink.value,
+                            stats: f.stats.value,
+                            contentType: f.contentType.value,
+                            about: f.about.value,
+                            needs: f.needs.value,
+                            goals: f.goals.value
+                        };
+
+                        const res = await fetch('/api/submit', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (res.ok) { 
+                            alert("✅ تم إرسال طلبك بنجاح! سيتم الرد عليك في الديسكورد."); 
+                            location.reload(); 
+                        } else {
+                            const err = await res.json();
+                            alert("❌ خطأ: " + err.error);
+                        }
+                    };
+                }
+            } catch (e) { console.log(e); }
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
